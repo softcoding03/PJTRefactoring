@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -72,10 +73,32 @@ public class ProductController {
 	public String addProduct(@ModelAttribute("product") Product product,
 							@RequestParam("file") MultipartFile[] uploadFile,
 							Model model) throws Exception {
+/*
+		String path =  "C:\\uploadFiles\\";
+		
+		for (MultipartFile mf : uploadFileList) {
+            String originFileName = mf.getOriginalFilename(); // 원본 파일 명
+            long fileSize = mf.getSize(); // 파일 사이즈
 
+            System.out.println("originFileName : " + originFileName);
+            System.out.println("fileSize : " + fileSize);
+
+            String saveFile = path + originFileName;
+            
+            String fileName = originFileName;
+            
+            try {
+                mf.transferTo(new File(saveFile));
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }*/
+		
 		String path = 
 		"C:\\Users\\user\\git\\07.Model2MVC(URI,pattern)\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
-		System.out.println("uploadFile넘어오는거 뭔가요 ? :" + uploadFile);
+				System.out.println("uploadFile넘어오는거 뭔가요 ? :" + uploadFile);
 		
 		for(MultipartFile file : uploadFile){
 			
@@ -84,8 +107,8 @@ public class ProductController {
     			System.out.println("originalName은 ??? : "+originalName);
     			
 		    			//불필요한 코드? 언제사용?
-		    			//String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
-		    			//	System.out.println("fileName은 ??? : "+fileName);
+		    	//String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
+		    			//System.out.println("fileName은 ??? : "+fileName);
     		
     		//유니크한 정보 만들어내기 -> 저장 및 업로드 시 사용
             String uuid = UUID.randomUUID().toString();
@@ -98,11 +121,18 @@ public class ProductController {
             Path savePath = Paths.get(savefileName);
 						System.out.println("savePath은 ??? : "+savePath);
             
+			//unique한 정보와 함께 파일명 지정하기
+			//String saveName = File.separator +uuid+"_"+originalName;
+			//			System.out.println("saveName은 ??? : "+saveName);
+			
+
 			//product 도메인 객체에 fileName 저장해주기
             product.setFileName(originalName);
             
             try {
+            	//파일을 실제 저장하는 부분
                 file.transferTo(savePath);
+                System.out.println("file 저장 완료");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -115,31 +145,7 @@ public class ProductController {
 		
 		return "forward:/product/addProduct.jsp";
 	}
-	/*
-	@RequestMapping(value="addProduct", method=RequestMethod.POST)
-	public String addProduct(@ModelAttribute("product") Product product,
-							@RequestParam("file") MultipartFile file,
-							Model model) throws Exception {
-//파일네임이 string 형태로 옴.
-		String path = 
-		"C:\\Users\\user\\git\\07.Model2MVC(URI,pattern)\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
-		System.out.println("몰라제발");
-		 
-		if (!file.getOriginalFilename().isEmpty()) {
-		      file.transferTo(new File(path, file.getOriginalFilename()));
-		      model.addAttribute("msg", "File uploaded successfully.");
-		   } else {
-		      model.addAttribute("msg", "Please select a valid mediaFile..");
-		  }
-		 
-		product.setFileName(file.getOriginalFilename());
-		System.out.println("/product/addProduct : POST");
-		//Business Logic
-		productService.addProduct(product);
-		model.addAttribute("product", product);
-		
-		return "forward:/product/addProduct.jsp";
-	}*/
+	
 	
 //	@RequestMapping("/getProduct.do")
 	@RequestMapping(value="getProduct", method=RequestMethod.GET)
