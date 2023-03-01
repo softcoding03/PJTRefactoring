@@ -122,12 +122,11 @@ public class ProductController {
 						System.out.println("savePath은 ??? : "+savePath);
             
 			//unique한 정보와 함께 파일명 지정하기
-			//String saveName = File.separator +uuid+"_"+originalName;
-			//			System.out.println("saveName은 ??? : "+saveName);
+			String saveName = uuid+"_"+originalName;
+						System.out.println("saveName은 ??? : "+saveName);
 			
-
 			//product 도메인 객체에 fileName 저장해주기
-            product.setFileName(originalName);
+            product.setFileName(saveName);
             
             try {
             	//파일을 실제 저장하는 부분
@@ -215,11 +214,52 @@ public class ProductController {
 //	@RequestMapping("/updateProduct.do")
 	@RequestMapping(value="updateProduct", method=RequestMethod.POST)
 	public String updateProduct(@ModelAttribute("product") Product product,
+								@RequestParam("file") MultipartFile[] uploadFile,
 								Model model , HttpSession session) throws Exception{
 		
 		System.out.println("product ??? -> "+ product);
 		System.out.println("/product/updateProduct : POST");
 		//Business Logic
+		String path = 
+				"C:\\Users\\user\\git\\07.Model2MVC(URI,pattern)\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
+						System.out.println("uploadFile넘어오는거 뭔가요 ? :" + uploadFile);
+				
+				for(MultipartFile file : uploadFile){
+					
+					//파일명 가져오기
+		            String originalName = file.getOriginalFilename();
+		    			System.out.println("originalName은 ??? : "+originalName);
+		    			
+				    			//불필요한 코드? 언제사용?
+				    	//String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
+				    			//System.out.println("fileName은 ??? : "+fileName);
+		    		
+		    		//유니크한 정보 만들어내기 -> 저장 및 업로드 시 사용
+		            String uuid = UUID.randomUUID().toString();
+		           
+		            //저장을 위한 경로 설정: 일반 경로 + 유니크한 정보 + 파일명
+		            String savefileName = path + File.separator + uuid + "_" + originalName;
+		            			System.out.println("savfileName은 ??? : "+savefileName);
+		            
+		            //파일의 경로를 선언 및 저장
+		            Path savePath = Paths.get(savefileName);
+								System.out.println("savePath은 ??? : "+savePath);
+		            
+					//unique한 정보와 함께 파일명 지정하기
+					String saveName = uuid+"_"+originalName;
+								System.out.println("saveName은 ??? : "+saveName);
+					
+					//product 도메인 객체에 fileName 저장해주기
+		            product.setFileName(saveName);
+		            
+		            try {
+		            	//파일을 실제 저장하는 부분
+		                file.transferTo(savePath);
+		                System.out.println("file 저장 완료");
+		            } catch (IOException e) {
+		                e.printStackTrace();
+		            }
+				}
 		productService.updateProduct(product);
 		
 		Product product2 = productService.getProduct(product.getProdNo());
