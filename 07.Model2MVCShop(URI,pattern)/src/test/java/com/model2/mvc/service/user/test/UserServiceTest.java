@@ -47,7 +47,7 @@ public class UserServiceTest {
 		user.setUserId("testUserId");
 		user.setUserName("testUserName");
 		user.setPassword("testPasswd");
-		user.setSsn("1111112222222");
+		user.setSsn("11111222");
 		user.setPhone("111-2222-3333");
 		user.setAddr("°æ±âµµ");
 		user.setEmail("test@test.com");
